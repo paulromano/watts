@@ -12,6 +12,7 @@ import h5py
 import sys
 
 from .fileutils import PathLike
+from .h5utils import save_mapping, load_mapping
 from .parameters import Parameters
 from .plugin import TemplatePlugin
 from .results import Results
@@ -55,6 +56,8 @@ class ResultsPyARC(Results):
         """
         with h5py.File(filename, 'w') as h5file:
             super()._save(h5file)
+            results_group = h5file.create_group('results')
+            save_mapping(self.results_data, results_group)
 
     @classmethod
     def _from_hdf5(cls, obj: h5py.Group):
@@ -66,7 +69,13 @@ class ResultsPyARC(Results):
             HDF5 group to load results from
         """
         time, parameters, inputs, outputs = Results._load(obj)
-        return cls(parameters, time, inputs, outputs)
+
+        # Get results data
+        results_data = {}
+        load_mapping(results_data, obj['reuslts'])
+
+        # Return new instance of results with all data
+        return cls(parameters, time, inputs, outputs, results_data)
 
 
 class PluginPyARC(TemplatePlugin):
