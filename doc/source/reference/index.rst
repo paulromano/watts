@@ -11,6 +11,8 @@ API Reference
    watts.Database
    watts.Parameters
    watts.Plugin
+   watts.PluginGeneric
+   watts.PluginABCE
    watts.PluginMCNP
    watts.PluginMOOSE
    watts.PluginOpenMC
